@@ -464,7 +464,11 @@ function renderScarf() {
     (a, b) => new Date(a.timestamp) - new Date(b.timestamp),
   );
   const proj = PROJECTS[VIEW_PROJECT];
-  const target = proj ? parseFloat(proj.targetLength) || 0 : 0;
+  const lastEntry = entries[entries.length - 1];
+  const target =
+    (proj && parseFloat(proj.targetLength)) ||
+    (lastEntry && parseFloat(lastEntry.targetLength)) ||
+    0;
   const cols = SCARF_COLS;
 
   const baseline = entries.length ? Math.max(parseFloat(entries[0].startLength) || 0, 0) : 0;
