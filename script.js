@@ -149,6 +149,14 @@ function loadAll() {
 function persistProjects() {
   localStorage.setItem("knitlog_projects", JSON.stringify(PROJECTS));
 }
+function pushProject(name) {
+  if (!CONFIG.webAppUrl || !PROJECTS[name]) return;
+  fetch(CONFIG.webAppUrl, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "upsertProject", name, project: PROJECTS[name] }),
+  }).catch(() => {});
+}
 function persistLogsCache() {
   localStorage.setItem("knitlog_logs_cache", JSON.stringify(LOGS));
 }
@@ -179,6 +187,19 @@ function fetchLogs() {
       console.error("Load failed:", err.message);
       renderAll();
     });
+}
+function fetchProjects() {
+  if (!CONFIG.webAppUrl) return;
+  fetch(CONFIG.webAppUrl + "?action=projects")
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.projects) {
+        PROJECTS = Object.assign({}, data.projects, PROJECTS);
+        persistProjects();
+        renderAll();
+      }
+    })
+    .catch((err) => console.error("Load projects failed:", err.message));
 }
 function setStatus(id, msg, isErr) {
   const el = document.getElementById(id);
@@ -291,6 +312,7 @@ function startTimer() {
   };
   PROJECTS[project] = Object.assign(PROJECTS[project] || {}, projectData);
   persistProjects();
+  pushProject(project);
 
   ACTIVE = Object.assign({ project, startLength, startTimestamp: Date.now() }, projectData);
   persistActive();
@@ -453,6 +475,7 @@ function toggleProjectComplete() {
   const p = PROJECTS[VIEW_PROJECT];
   p.status = p.status === "completed" ? "in_progress" : "completed";
   persistProjects();
+  pushProject(VIEW_PROJECT);
   renderScarf();
   populateProjectSelect();
 }
@@ -633,4 +656,7 @@ window.addEventListener("focus", tickTimer);
 /* ---------- init ---------- */
 loadAll();
 renderAll();
-if (CONFIG.webAppUrl) fetchLogs();
+if (CONFIG.webAppUrl) {
+  fetchLogs();
+  fetchProjects();
+}
