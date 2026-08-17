@@ -1,0 +1,531 @@
+:root {
+  --tet-grey: #dedede;
+  --sec-grey: #5e5e5e;
+  --border: #000000;
+  --bg: #fff;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  text-decoration: none;
+  box-sizing: border-box;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none;     /* IE 10 and IE Mobile */
+  user-select: none;     
+}
+
+html,
+body {
+  font-family: sans-serif;
+  /* width: 100%;
+  overflow-x: hidden; */
+}
+
+.wrap {
+  padding: 0.5rem;
+}
+
+.sub {
+  color: var(--sec-grey);
+}
+
+.topline {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+
+
+/* ----drawer---- */
+
+.drawer-backdrop {
+  background-color: #fff;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 380px;
+  max-width: 90vw;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  z-index: 50;
+  border-radius: 0;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ----select--- */
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+/* 포커스 및 비활성화 상태 예외 처리 */
+select:focus {
+  outline: none;
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+h2 {
+  text-transform: uppercase;
+}
+
+input {
+  border: none;
+  font-weight: 600;
+}
+input:focus {
+  outline: none;
+}
+input::placeholder {
+  color: var(--tet-grey);
+  opacity: 1;
+  font-weight: 600;
+}
+
+.autocomplete-wrap {
+  position: relative;
+}
+.autocomplete-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.autocomplete-item {
+  padding: 0.4rem 0.6rem;
+  font-weight: 600;
+  color: var(--sec-grey);
+  cursor: pointer;
+}
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--tet-grey);
+  color: var(--border);
+}
+
+#projectSelect:has(option[value=""]:checked) {
+  color: var(--tet-grey);
+}
+#projectSelect option[value=""] {
+  color: var(--tet-grey);
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.area-main {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.area-start {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  gap: 18px;
+}
+
+.area-progress {
+  width: 20%;
+}
+
+.area-table {
+  margin-top: 18px;
+}
+
+/* ---------- card ---------- */
+
+.drawer {
+  width: 40vw;
+  border-right: 1px solid var(--border);
+  padding: 0.5rem;
+}
+
+/* ---------- form fields ---------- */
+
+.field {
+  margin-bottom: 0.5rem;
+}
+
+.field label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+input[type="color"] {
+  -webkit-appearance: none; /
+  -moz-appearance: none; 
+  appearance: none;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  cursor: pointer;
+  overflow: hidden; 
+  padding: 0; 
+  background: none; 
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none; 
+}
+
+/* 3. Style the inner color block for Firefox */
+input[type="color"]::-moz-color-swatch {
+  border: none; 
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ---------- method radio (Knit / Crochet) ---------- */
+.radio-pair {
+  display: flex;
+  gap: 16px;
+}
+.radio-pair label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-transform: none;
+  font-weight: 600;
+  color: var(--tet-grey);
+}
+.radio-pair label:has(input:checked) {
+  color: var(--border);
+}
+input[type="radio"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+
+  /* Create the square shape */
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 1px solid var(--tet-grey);
+  background-color: #fff;
+
+  /* Ensure proper alignment with text */
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked {
+  background-color: var(--border);
+  border-color: var(--border);
+}
+
+/* ---------- stitch technique (multi-select) ---------- */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-transform: none;
+  font-weight: 600;
+  color: var(--tet-grey);
+}
+.checkbox-group label:has(input:checked) {
+  color: var(--border);
+}
+input[type="checkbox"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 1px solid var(--tet-grey);
+  background-color: #fff;
+  display: inline-block;
+  vertical-align: middle;
+}
+input[type="checkbox"]:checked {
+  background-color: var(--border);
+  border-color: var(--border);
+}
+
+/* ---------- buttons ---------- */
+button {
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--bg);
+  padding: 0.4rem 0.6rem;
+    transition:
+    filter 0.15s ease,
+    background 0.15s ease;
+}
+
+
+.btn:hover {
+  filter: brightness(0.96);
+}
+
+
+
+/* ---------- active session ---------- */
+.session-meta {
+  color: var(--sec-grey);
+  margin-bottom: 0.5rem;
+}
+
+.timer-display {
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border: 1px solid var(--border);
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- progress / pixel field (right-hand aside) ---------- */
+
+.progress-card {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-top {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-top .field {
+  margin-bottom: 0;
+}
+
+.pixel-field {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1px;
+  border: none;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.stitch-row {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(22, 1fr);
+  gap: 1px;
+}
+
+.stitch {
+  width: 100%;
+  height: 100%;
+}
+
+.stitch-empty {
+  background-color: #f4f4f4;
+}
+
+
+
+
+/* ---------- history table ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  margin-left: 0.5rem;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.8rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+
+thead th {
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--border);
+  position: sticky;
+  top: 0;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+
+.yarn-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: .6rem;
+  height: .6rem;
+  border-radius: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  flex: 0 0 auto;
+}
+
+.empty {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--sub);
+}
+
+@media (max-width: 860px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "topline topline"
+      "start start"
+      "table progress";
+    row-gap: 18px;
+    column-gap: 0;
+  }
+
+  .area-main {
+    display: contents;
+  }
+
+  #mainTopline {
+    grid-area: topline;
+  }
+
+  .area-start {
+    grid-area: start;
+  }
+
+  .area-table {
+    grid-area: table;
+    margin-top: 0;
+    font-size: 0.7rem;
+  }
+
+  .area-table table {
+    margin-top: -0.8rem;
+  }
+
+  .area-table th,
+  .area-table td {
+    font-size: 0.7rem;
+  }
+
+  .area-progress {
+    grid-area: progress;
+    width: 100%;
+  }
+
+  .progress-card {
+    position: static;
+    height: auto;
+    display: block;
+  }
+
+  .pixel-field {
+    width: 100%;
+    height: 85vh;
+    flex: none;
+  }
+
+  .col-start,
+  .col-today,
+  .col-gauge,
+  .col-target,
+  .col-remain,
+  .col-duration,
+  .col-yarn,
+  .col-needle,
+  .col-method,
+  .col-technique,
+  .col-location {
+    display: none;
+  }
+
+  #toggleCompleteBtn,
+  .scarf-meta {
+    display: none !important;
+  }
+}

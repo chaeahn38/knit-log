@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knit Log</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="topbar"></div>
+    <div class="wrap">
+      <div class="layout">
+        <!-- LEFT COLUMN (80%): topline + start/active + history -->
+        <div class="area-main">
+          <div class="topline" id="mainTopline">
+            <span id="startButtonWrap">
+              <button class="btn btn-accent" onclick="openStartForm()">Start Knit</button>
+            </span>
+            <span class="sub">at <span id="todayLabel"></span></span>
+          </div>
+
+          <!-- START / ACTIVE SESSION -->
+          <div class="area-start">
+            <!-- START FORM -->
+            <div class="card" id="startForm" style="display: none">
+              <div class="grid-2">
+                <div class="field">
+                  <label>Project</label>
+                  <select id="projectSelect" onchange="onProjectPick()">
+                    <option value="">Choose an in-progress project</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Or new project name</label>
+                  <input
+                    id="newProjectName"
+                    placeholder="e.g. Scarf"
+                    oninput="onNewProjectTyped()"
+                  />
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="field">
+                  <label>Start length (cm)</label>
+                  <input type="number" id="fStartLength" step="0.1" />
+                </div>
+                <div class="field">
+                  <label>Gauge (sts / 10cm)</label>
+                  <input type="number" id="fGauge" step="0.1" />
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="field">
+                  <label>Target length (cm)</label>
+                  <input type="number" id="fTargetLength" step="0.1" />
+                </div>
+                <div class="field">
+                  <label>Needle size</label>
+                  <input id="fNeedleSize" placeholder="e.g. 4.0mm / US6" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Yarn color</label>
+                <div class="yarn-row">
+                  <input type="color" id="fYarnColor" value="#A6503A" />
+                  <input id="fYarnColorName" placeholder="Color name" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Method</label>
+                <div class="radio-pair">
+                  <label>
+                    <input
+                      type="radio"
+                      name="fMethod"
+                      id="fMethodKnit"
+                      value="knit"
+                      checked
+                      onchange="setFMethod('knit')"
+                    />
+                    Knit
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="fMethod"
+                      id="fMethodCrochet"
+                      value="crochet"
+                      onchange="setFMethod('crochet')"
+                    />
+                    Crochet
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Stitch technique (multi-select)</label>
+                <div class="checkbox-group" id="fTechChips">
+                  <label><input type="checkbox" value="Knit stitch" /> Knit stitch</label>
+                  <label><input type="checkbox" value="Purl stitch" /> Purl stitch</label>
+                  <label><input type="checkbox" value="Ribbing" /> Ribbing</label>
+                  <label><input type="checkbox" value="Stockinette" /> Stockinette</label>
+                  <label><input type="checkbox" value="Garter stitch" /> Garter stitch</label>
+                  <label><input type="checkbox" value="Cable" /> Cable</label>
+                </div>
+                <input id="fTechCustom" placeholder="Other technique(s), comma separated" />
+              </div>
+
+              <div class="field autocomplete-wrap">
+                <label>City</label>
+                <input id="fCityCountry" placeholder="e.g. Seoul" autocomplete="off" />
+                <div class="autocomplete-list" id="cityAutocomplete"></div>
+              </div>
+
+              <div class="session-actions">
+                <button class="btn btn-ghost" onclick="closeStartForm()">Back</button>
+                <button class="btn btn-accent" onclick="startTimer()">Start Timer</button>
+              </div>
+              <div id="startStatus" class="status"></div>
+            </div>
+
+            <!-- ACTIVE SESSION -->
+            <div class="card active-session" id="activeSessionCard" style="display: none">
+              <div class="topline">
+                <h2>Knitting started</h2>
+                <span class="sub">at <span id="activeAtLabel"></span></span>
+              </div>
+              <div id="activeProjectName"></div>
+              <div class="session-meta" id="activeMeta"></div>
+              <div class="timer-display" id="liveTimer">00:00:00</div>
+              <div class="session-actions">
+                <button class="btn btn-ghost" onclick="cancelSession()">Cancel session</button>
+                <button class="btn btn-primary" onclick="openFinishForm()">Finish</button>
+              </div>
+            </div>
+
+            <!-- FINISH FORM -->
+            <div class="card" id="finishForm" style="display: none">
+              <h2>Finish &amp; Save</h2>
+              <div class="grid-2">
+                <div class="field">
+                  <label>Start length (cm)</label>
+                  <input id="finStartLength" readonly />
+                </div>
+                <div class="field">
+                  <label>End length (cm)</label>
+                  <input type="number" id="finEndLength" step="0.1" oninput="finishRecalc()" />
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="field">
+                  <label>Today's length</label>
+                  <input id="finLengthToday" readonly />
+                </div>
+                <div class="field">
+                  <label>Remaining length</label>
+                  <input id="finRemaining" readonly />
+                </div>
+              </div>
+              <div class="field">
+                <label>Duration (min)</label>
+                <input type="number" id="finDuration" step="1" />
+              </div>
+              <div class="session-actions">
+                <button class="btn btn-ghost" onclick="closeFinishForm()">Back</button>
+                <button class="btn btn-primary" onclick="saveLog()">Save Log</button>
+              </div>
+              <div id="finishStatus" class="status"></div>
+            </div>
+          </div>
+
+          <!-- HISTORY TABLE -->
+          <div class="area-table">
+            <div class="card">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th
+                        class="col-timestamp"
+                        data-key="timestamp"
+                        onclick="onSortClick('timestamp')"
+                      >
+                        Timestamp
+                      </th>
+                      <th class="col-project" data-key="project" onclick="onSortClick('project')">
+                        Project
+                      </th>
+                      <th
+                        class="col-start"
+                        data-key="startLength"
+                        onclick="onSortClick('startLength')"
+                      >
+                        Start
+                      </th>
+                      <th class="col-end" data-key="endLength" onclick="onSortClick('endLength')">
+                        End
+                      </th>
+                      <th
+                        class="col-today"
+                        data-key="lengthToday"
+                        onclick="onSortClick('lengthToday')"
+                      >
+                        Today
+                      </th>
+                      <th class="col-gauge" data-key="gauge" onclick="onSortClick('gauge')">
+                        Gauge
+                      </th>
+                      <th
+                        class="col-target"
+                        data-key="targetLength"
+                        onclick="onSortClick('targetLength')"
+                      >
+                        Target
+                      </th>
+                      <th
+                        class="col-remain"
+                        data-key="remainingLength"
+                        onclick="onSortClick('remainingLength')"
+                      >
+                        Remain
+                      </th>
+                      <th
+                        class="col-duration"
+                        data-key="durationMin"
+                        onclick="onSortClick('durationMin')"
+                      >
+                        Duration
+                      </th>
+                      <th
+                        class="col-yarn"
+                        data-key="yarnColorName"
+                        onclick="onSortClick('yarnColorName')"
+                      >
+                        Yarn
+                      </th>
+                      <th
+                        class="col-needle"
+                        data-key="needleSize"
+                        onclick="onSortClick('needleSize')"
+                      >
+                        Needle
+                      </th>
+                      <th class="col-method" data-key="method" onclick="onSortClick('method')">
+                        Method
+                      </th>
+                      <th
+                        class="col-technique"
+                        data-key="technique"
+                        onclick="onSortClick('technique')"
+                      >
+                        Technique
+                      </th>
+                      <th
+                        class="col-location"
+                        data-key="cityCountry"
+                        onclick="onSortClick('cityCountry')"
+                      >
+                        Location
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="logTableBody"></tbody>
+                </table>
+                <div class="empty" id="emptyState" style="display: none">
+                  No log entries yet. Tap "Start Knit" above.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROGRESS PANEL -->
+        <div class="area-progress">
+          <div class="card progress-card">
+            <div class="progress-top">
+              <div class="field">
+                <select id="viewProjectSelect" onchange="onViewProjectChange()"></select>
+              </div>
+              <div class="scarf-meta">
+                <b id="scarfCurrent">0</b> / <span id="scarfTarget">–</span> cm target
+              </div>
+              <button
+                class="btn btn-ghost"
+                id="toggleCompleteBtn"
+                onclick="toggleProjectComplete()"
+                style="display: none; margin-left: auto"
+              >
+                Done
+              </button>
+            </div>
+
+            <div class="pixel-field" id="scarfCol"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="cities.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
