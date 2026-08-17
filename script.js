@@ -1,7 +1,7 @@
 /* ---------- state ---------- */
 let CONFIG = {
   webAppUrl:
-    "https://script.google.com/macros/s/AKfycbwo-UgC3rI0qgcr5FPtZELQS-7DW4NFwf-au9nNYv_oji2xk8wct1yS_79nx9Auv2NP/exec",
+    "https://script.google.com/macros/s/AKfycby6rxK3Ro2AcpEqf51QqjKNHbu-jPjNYf6SlNCB1t9-KoJHHViengK7S8_x5ZEpPGxY/exec",
 };
 let PROJECTS = {}; // name -> {status, gauge, targetLength, yarnColor, yarnColorName, needleSize, method, technique, cityCountry}
 let LOGS = []; // entries from sheet / local cache
