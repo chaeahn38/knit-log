@@ -7,19 +7,22 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="topbar"></div>
-    <div class="wrap">
+    <div class="page">
       <div class="layout">
-        <!-- LEFT COLUMN (80%): topline + start/active + history -->
+        <!-- ============================================================
+             SECTION 1: SESSION FLOW
+             Left column, main content: page header, then whichever of the
+             three session cards (start form / active session / finish
+             form) is currently visible, based on state in script.js.
+             ============================================================ -->
         <div class="area-main">
-          <div class="topline" id="mainTopline">
+          <div class="page-header" id="mainTopline">
             <span id="startButtonWrap">
               <button class="btn btn-accent" onclick="openStartForm()">Start Knit</button>
             </span>
-            <span class="sub">at <span id="todayLabel"></span></span>
+            <span class="text-muted">at <span id="todayLabel"></span></span>
           </div>
 
-          <!-- START / ACTIVE SESSION -->
           <div class="area-start">
             <!-- START FORM -->
             <div class="card" id="startForm" style="display: none">
@@ -125,9 +128,9 @@
 
             <!-- ACTIVE SESSION -->
             <div class="card active-session" id="activeSessionCard" style="display: none">
-              <div class="topline">
+              <div class="page-header">
                 <h2>Knitting started</h2>
-                <span class="sub">at <span id="activeAtLabel"></span></span>
+                <span class="text-muted">at <span id="activeAtLabel"></span></span>
               </div>
               <div id="activeProjectName"></div>
               <div class="session-meta" id="activeMeta"></div>
@@ -173,7 +176,13 @@
             </div>
           </div>
 
-          <!-- HISTORY TABLE -->
+          <!-- ============================================================
+               SECTION 2: HISTORY TABLE
+               Sortable log of past sessions. Column headers carry
+               data-key attributes read by onSortClick() in script.js;
+               col-* classes let the mobile breakpoint hide low-priority
+               columns (see the max-width: 860px block in style.css).
+               ============================================================ -->
           <div class="area-table">
             <div class="card">
               <div class="table-wrap">
@@ -274,7 +283,12 @@
           </div>
         </div>
 
-        <!-- PROGRESS PANEL -->
+        <!-- ============================================================
+             SECTION 3: PROGRESS PANEL
+             Right column: pixel-grid visualization of progress toward
+             the selected project's target length. Rendered into
+             #scarfCol by renderScarf() in script.js.
+             ============================================================ -->
         <div class="area-progress">
           <div class="card progress-card">
             <div class="progress-top">

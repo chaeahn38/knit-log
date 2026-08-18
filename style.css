@@ -1,10 +1,19 @@
+/* ============================================================
+   1. VARIABLES & RESET
+   Single grayscale palette (matches the deployed site at
+   knit.chaeahn.com) used everywhere below. Shades go light ->
+   dark: bg (page) < surface (cards/inputs) < muted < secondary
+   < accent (interactive fills) < text (borders, darkest).
+   ============================================================ */
 :root {
-  --tet-grey: #dedede;
-  --sec-grey: #5e5e5e;
-  --border: #000000;
-  --bg: #fff;
+  --color-bg: #fff; /* page background */
+  --color-surface: #fff; /* cards, dropdowns, checkbox/radio fill */
+  --color-text: #000; /* headings, borders, primary text */
+  --color-text-secondary: #5e5e5e; /* table sub-text, session meta */
+  --color-text-muted: #bdbdbd; /* placeholders, timestamps, disabled */
+  --color-accent: #ffffff; /* primary action fill (Start Timer) */
+  --color-accent-strong: #d0d0d0; /* emphasis action fill (Finish/Save) */
 }
-
 
 * {
   margin: 0;
@@ -13,75 +22,35 @@
   text-decoration: none;
   box-sizing: border-box;
   -webkit-user-select: none; /* Safari */
-  -ms-user-select: none;     /* IE 10 and IE Mobile */
-  user-select: none;     
+  -ms-user-select: none; /* IE 10 and IE Mobile */
+  user-select: none;
 }
 
 html,
 body {
   font-family: sans-serif;
-  /* width: 100%;
-  overflow-x: hidden; */
+  background-color: var(--color-bg);
 }
 
-.wrap {
+.page {
   padding: 0.5rem;
 }
 
-.sub {
-  color: var(--sec-grey);
+.text-muted {
+  color: var(--color-text);
 }
 
-.topline {
+.page-header {
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
 
-
-
-/* ----drawer---- */
-
-.drawer-backdrop {
-  background-color: #fff;
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.drawer-backdrop.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 380px;
-  max-width: 90vw;
-  overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.25s ease;
-  z-index: 50;
-  border-radius: 0;
-}
-
-.drawer.open {
-  transform: translateX(0);
-}
-
-.drawer-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ----select--- */
+/* ============================================================
+   2. FORM CONTROLS
+   Shared styling for inputs, selects, radios, checkboxes, and
+   the native color picker used in the start-session form.
+   ============================================================ */
 
 select {
   -webkit-appearance: none;
@@ -108,14 +77,16 @@ h2 {
 }
 
 input {
+  background-color: var(--color-surface);
   border: none;
   font-weight: 600;
 }
 input:focus {
+  background-color: var(--color-surface);
   outline: none;
 }
 input::placeholder {
-  color: var(--tet-grey);
+  color: var(--color-text-muted);
   opacity: 1;
   font-weight: 600;
 }
@@ -130,8 +101,8 @@ input::placeholder {
   left: 0;
   right: 0;
   z-index: 60;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--color-surface);
+  border: 1px solid var(--color-text);
   border-top: none;
   max-height: 200px;
   overflow-y: auto;
@@ -139,23 +110,29 @@ input::placeholder {
 .autocomplete-item {
   padding: 0.4rem 0.6rem;
   font-weight: 600;
-  color: var(--sec-grey);
+  color: var(--color-text-secondary);
   cursor: pointer;
 }
 .autocomplete-item:hover,
 .autocomplete-item.active {
-  background: var(--tet-grey);
-  color: var(--border);
+  background: var(--color-text-muted);
+  color: var(--color-text);
 }
 
 #projectSelect:has(option[value=""]:checked) {
-  color: var(--tet-grey);
+  color: var(--color-text-muted);
 }
 #projectSelect option[value=""] {
-  color: var(--tet-grey);
+  color: var(--color-text-muted);
 }
 
-/* ---------- layout ---------- */
+/* ============================================================
+   3. LAYOUT
+   Two-column page shell: area-main (session flow + history,
+   80% width) beside area-progress (pixel field, 20% width).
+   Collapses to a single-column grid under 860px — see the
+   media query at the bottom of this file.
+   ============================================================ */
 
 .layout {
   display: flex;
@@ -185,16 +162,6 @@ input::placeholder {
   margin-top: 18px;
 }
 
-/* ---------- card ---------- */
-
-.drawer {
-  width: 40vw;
-  border-right: 1px solid var(--border);
-  padding: 0.5rem;
-}
-
-/* ---------- form fields ---------- */
-
 .field {
   margin-bottom: 0.5rem;
 }
@@ -207,16 +174,16 @@ input::placeholder {
 }
 
 input[type="color"] {
-  -webkit-appearance: none; /
-  -moz-appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   width: 2rem;
   height: 2rem;
   border: none;
   cursor: pointer;
-  overflow: hidden; 
-  padding: 0; 
-  background: none; 
+  overflow: hidden;
+  padding: 0;
+  background: none;
 }
 
 input[type="color"]::-webkit-color-swatch-wrapper {
@@ -224,12 +191,12 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 input[type="color"]::-webkit-color-swatch {
-  border: none; 
+  border: none;
 }
 
 /* 3. Style the inner color block for Firefox */
 input[type="color"]::-moz-color-swatch {
-  border: none; 
+  border: none;
 }
 
 .grid-2 {
@@ -244,7 +211,6 @@ input[type="color"]::-moz-color-swatch {
   }
 }
 
-
 /* ---------- method radio (Knit / Crochet) ---------- */
 .radio-pair {
   display: flex;
@@ -257,10 +223,10 @@ input[type="color"]::-moz-color-swatch {
   cursor: pointer;
   text-transform: none;
   font-weight: 600;
-  color: var(--tet-grey);
+  color: var(--color-text-muted);
 }
 .radio-pair label:has(input:checked) {
-  color: var(--border);
+  color: var(--color-text);
 }
 input[type="radio"] {
   cursor: pointer;
@@ -270,8 +236,8 @@ input[type="radio"] {
   /* Create the square shape */
   width: 0.8rem;
   height: 0.8rem;
-  border: 1px solid var(--tet-grey);
-  background-color: #fff;
+  border: 1px solid var(--color-text-muted);
+  background-color: var(--color-surface);
 
   /* Ensure proper alignment with text */
   display: inline-block;
@@ -280,8 +246,8 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked {
-  background-color: var(--border);
-  border-color: var(--border);
+  background-color: var(--color-text);
+  border-color: var(--color-text);
 }
 
 /* ---------- stitch technique (multi-select) ---------- */
@@ -297,10 +263,10 @@ input[type="radio"]:checked {
   cursor: pointer;
   text-transform: none;
   font-weight: 600;
-  color: var(--tet-grey);
+  color: var(--color-text-muted);
 }
 .checkbox-group label:has(input:checked) {
-  color: var(--border);
+  color: var(--color-text);
 }
 input[type="checkbox"] {
   cursor: pointer;
@@ -308,37 +274,59 @@ input[type="checkbox"] {
   appearance: none;
   width: 0.8rem;
   height: 0.8rem;
-  border: 1px solid var(--tet-grey);
-  background-color: #fff;
+  border: 1px solid var(--color-text-muted);
+  background-color: var(--color-surface);
   display: inline-block;
   vertical-align: middle;
 }
 input[type="checkbox"]:checked {
-  background-color: var(--border);
-  border-color: var(--border);
+  background-color: var(--color-text);
+  border-color: var(--color-text);
 }
 
-/* ---------- buttons ---------- */
-button {
-  border: 1px solid var(--border);
+/* ============================================================
+   4. BUTTONS
+   .btn is the shared base; .btn-ghost/.btn-accent/.btn-primary
+   are the three grayscale weights used across the session flow
+   (back/cancel, start, finish/save).
+   ============================================================ */
+.btn {
+  border: 1px solid var(--color-text);
   border-radius: 0;
-  background: var(--bg);
   padding: 0.4rem 0.6rem;
-    transition:
+  cursor: pointer;
+  transition:
     filter 0.15s ease,
     background 0.15s ease;
 }
-
 
 .btn:hover {
   filter: brightness(0.96);
 }
 
+.btn-ghost {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
 
+.btn-accent {
+  background: var(--color-accent);
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
 
-/* ---------- active session ---------- */
+.btn-primary {
+  background: var(--color-accent-strong);
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   5. ACTIVE SESSION
+   The live timer card shown while a knitting session is running.
+   ============================================================ */
 .session-meta {
-  color: var(--sec-grey);
+  color: var(--color-text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -347,12 +335,18 @@ button {
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   text-align: center;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-text);
   padding: 0.6rem;
   margin-bottom: 0.5rem;
 }
 
 /* ---------- progress / pixel field (right-hand aside) ---------- */
+
+/* ============================================================
+   6. PROGRESS PANEL
+   Sticky right-hand pixel grid (renderScarf() in script.js builds
+   one .stitch-row per row of stitches, filled bottom-up).
+   ============================================================ */
 
 .progress-card {
   position: sticky;
@@ -399,16 +393,16 @@ button {
   background-color: #f4f4f4;
 }
 
-
-
-
-/* ---------- history table ---------- */
+/* ============================================================
+   7. HISTORY TABLE
+   Sortable log table. Column widths/priority are controlled via
+   the col-* classes hidden in the mobile breakpoint below.
+   ============================================================ */
 
 .table-wrap {
   overflow-x: auto;
   margin-left: 0.5rem;
 }
-
 
 table {
   width: 100%;
@@ -418,20 +412,18 @@ table {
   white-space: nowrap;
 }
 
-
 thead th {
   text-align: left;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--border);
+  color: var(--color-text);
   position: sticky;
   top: 0;
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
 }
-
 
 .yarn-cell {
   display: inline-flex;
@@ -441,9 +433,8 @@ thead th {
 
 .swatch {
   display: inline-block;
-  width: .6rem;
-  height: .6rem;
-  border-radius: none;
+  width: 0.6rem;
+  height: 0.6rem;
   border: 1px solid rgba(0, 0, 0, 0.08);
   flex: 0 0 auto;
 }
@@ -451,8 +442,14 @@ thead th {
 .empty {
   text-align: center;
   font-size: 0.85rem;
-  color: var(--sub);
+  color: var(--color-text-muted);
 }
+
+/* ============================================================
+   8. RESPONSIVE
+   Below 860px, the two-column layout collapses into a single-
+   column grid and low-priority table columns are hidden.
+   ============================================================ */
 
 @media (max-width: 860px) {
   .layout {
